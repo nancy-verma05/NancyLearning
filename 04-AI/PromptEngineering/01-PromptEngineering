@@ -1,0 +1,186 @@
+# Prompt Engineering: My Notes
+
+*Items marked **(added)** were added for clarity. Everything else is from my own notes.*
+
+---
+
+## 1. What is Prompt Engineering?
+
+**Definition:** The process of designing clear and effective instructions (prompts) for an AI model to get the desired output.
+
+**Simple definition:**
+> Prompt Engineering = asking AI the right question in the right way to get the right result.
+
+**More formal:** Designing and refining inputs (prompts) to communicate effectively with Large Language Models (LLMs) and achieve the desired outputs.
+
+---
+
+## 2. How to learn it: Ask → Tell
+
+- Find a better way to communicate with the LLM.
+- **Ask → Tell**
+
+| | Result |
+|---|---|
+| **Ask** | You get only about **20%** of what the LLM can do |
+| **Tell** | You get about **80%** |
+
+> You never *ask* the LLM. You always *tell* it.
+> Telling the LLM the right thing, in the right way, is called **prompting**.
+
+---
+
+## 3. Core principles
+
+### 1. Be specific
+- ❌ Bad: "Write test cases for login"
+- ✅ Good: "Write 5 functional test cases for email/password login, covering valid login, invalid email, invalid password, empty fields, and SQL injection attempt. Use the proper JIRA format: Test ID, Description, Steps, Expected Result."
+
+### 2. Provide context
+- ❌ Bad: "Test the API"
+- ✅ Good: "Given this API endpoint documentation: [paste docs], write test cases covering happy path, error scenarios, and edge cases."
+
+### 3. Define the output format
+- ❌ Bad: "Generate bug report"
+- ✅ Good: "Generate a bug report using JIRA format: Title, Environment, Steps to Reproduce, Expected Result, Actual Result, Severity, Attachments."
+
+### 4. Set constraints
+- ❌ Bad: "Help me test"
+- ✅ Good: "Using ONLY the PRD provided, generate test cases. Do NOT assume any features not mentioned. If information is missing, state 'Not specified in PRD'."
+
+---
+
+## 4. The 7-step process
+
+```
+1. Define the Goal
+2. Gather Context
+3. Choose Prompting Strategy
+4. Structure the Prompt
+5. Add Constraints
+6. Test and Iterate
+7. Document and Reuse
+```
+
+Running example: *Create test cases for app.vwo.com*
+
+---
+
+### Step 1: Define the goal
+
+Ask yourself:
+- What exactly do I need?
+- What will I do with the output?
+- What does success look like?
+
+| | Example |
+|---|---|
+| ❌ Vague | "Help me with testing" |
+| ✅ Clear | "Generate 10 test cases for login validation" |
+
+**Example objective:**
+> I want to generate only 10 test cases for the login page on app.vwo.com. I can see these elements on the page:
+> - email ID
+> - password
+> - submit
+> - forgot password
+> - a way to create a new account
+>
+> I have [X] years of experience, so please create the test cases so they are production-ready and enterprise-grade.
+
+**Rule 1: Plan, then generate**
+> **95% plan, 5% action.** Plan first, then let the AI generate.
+
+**BLAST framework:** makes sure you know what you are building before you generate. *(add my notes on BLAST here)*
+
+---
+
+### Step 2: Gather context
+
+Collect all relevant information:
+- PRD / requirements document
+- API documentation
+- Screenshots / UI mockups
+- Error logs
+- Previous test cases
+- Constraints / limitations
+- JIRA IDs, stories, epics, BRD, Confluence pages, wireframes, Figma, architecture diagrams, Miro
+
+**Rule: More context = better output.**
+
+---
+
+### Step 3: Choose a prompting strategy
+
+| Strategy | What it means |
+|---|---|
+| **Zero-shot** | No examples. Just the instruction |
+| **Few-shot** | You give one or more examples along with the prompt, showing what you want |
+| **Chain-of-thought** | Ask the model to reason step by step. This also lets you give feedback on the steps and refine the answer **(added: step-by-step reasoning)** |
+| **Role-based** | Tell it to act as an expert, for example "Act as a QA engineer" |
+
+**Which to use:**
+
+| Situation | Strategy | Notes |
+|---|---|---|
+| Simple, standard task | Zero-shot | No example |
+| Custom format needed | Few-shot | 2-3 examples |
+| Complex analysis | Chain-of-thought | Ask it to think it through |
+| Domain expertise needed | Role-based | Act as QA |
+
+---
+
+### Step 4: Structure the prompt (RICE-POT, recommended)
+
+```
+ROLE:         [Expertise]
+INSTRUCTIONS: [Purpose]
+CONTEXT:      [Background info]
+EXPECTED:     [Success criteria]
+PARAMETERS:   [Constraints]
+OUTPUT:       [Format]
+TONE:         [Specific instruction]
+```
+
+**(added) Filled-in example:**
+
+```
+ROLE: You are a senior QA engineer.
+INSTRUCTIONS: Write 5 test cases for the login feature.
+CONTEXT: Requirement: "Login accepts email and password. After 5 failed attempts the account is locked."
+EXPECTED: Each test case is traceable to the requirement. Gaps are listed, not guessed.
+PARAMETERS: Use ONLY the requirement. If information is missing, reply "Insufficient information to determine."
+OUTPUT: A table with TC ID, scenario, steps, expected result.
+TONE: Concise and professional.
+```
+
+*Note: here "Parameters" means the rules and constraints in the prompt. It is not the same as an LLM's parameters (weights).*
+
+---
+
+### Steps 5 to 7 (to expand in my notes)
+
+| Step | One line **(added)** |
+|---|---|
+| **5. Add constraints** | Limit what the model may use and say what to do when information is missing (see Core principle 4) |
+| **6. Test and iterate** | Run the prompt, check the output, refine, and repeat |
+| **7. Document and reuse** | Save prompts that work, with notes, so the team can reuse them |
+
+---
+
+## 5. How we can leverage an LLM (100%)
+
+1. **Prompt engineering** (skill, AI agents)
+2. **RAG** *(added: Retrieval-Augmented Generation. The system fetches relevant documents and puts them into the prompt, so the model answers from them)*
+3. **Fine-tuning** *(added: training the model further on your own examples to change its behaviour)*
+
+---
+
+## 6. Quick recap
+
+- Prompt engineering = **tell** the LLM clearly, don't just ask.
+- Four principles: **specific, context, output format, constraints**.
+- Process: **goal → context → strategy → structure → constraints → test and iterate → document and reuse**.
+- Strategies: **zero-shot, few-shot, chain-of-thought, role-based**.
+- Template: **RICE-POT** (Role, Instructions, Context, Expected, Parameters, Output, Tone).
+- Rule: **95% plan, 5% action**. More context means better output.
